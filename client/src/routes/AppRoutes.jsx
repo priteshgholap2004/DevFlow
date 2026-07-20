@@ -5,6 +5,7 @@ import Register from "../pages/Register";
 import Dashboard from "../pages/Dashboard";
 import DashboardLayout from "../layouts/DashboardLayout";
 import NotFound from "../pages/NotFound";
+import ProjectsPage from "../features/project/pages/ProjectsPage";
 
 function AppRoutes() {
     return (
@@ -18,7 +19,11 @@ function AppRoutes() {
                 <Route path="/register" element={<Register />} />
 
                 <Route path="/dashboard" element={<DashboardLayout />}>
+                    
                     <Route index element={<Dashboard />} />
+           
+                    <Route path="projects" element={<ProjectsPage />} />
+                
                 </Route>
 
                 <Route path="*" element={<NotFound />} />
