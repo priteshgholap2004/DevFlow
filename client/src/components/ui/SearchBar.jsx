@@ -1,7 +1,7 @@
 import { Search } from "lucide-react";
 
 function SearchBar({
-  value = "",
+  value,
   onChange,
   placeholder = "Search...",
   className = "",
@@ -30,8 +30,14 @@ function SearchBar({
 
       <input
         type="text"
-        value={value}
-        onChange={onChange}
+        {...(onChange
+          ? {
+              value,
+              onChange,
+            }
+          : {
+              defaultValue: value,
+            })}
         placeholder={placeholder}
         className="flex-1 bg-transparent px-3 text-sm text-text placeholder:text-muted outline-none"
       />

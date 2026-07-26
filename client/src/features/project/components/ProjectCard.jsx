@@ -1,4 +1,6 @@
-import { cn } from "../../../lib/utils";
+import { Pencil, Trash2 } from "lucide-react";
+import ActionMenu from "../../../components/ui/ActionMenu";
+import { cn, formatDate } from "../../../lib/utils";
 
 const statusStyles = {
   Active:
@@ -12,14 +14,21 @@ const statusStyles = {
 };
 
 function ProjectCard({
-  name,
-  description,
-  progress,
-  status,
-  dueDate,
-  tasks,
-  members,
+  project,
+  onEdit,
+  onDelete,
 }) {
+
+  const {
+    id,
+    name,
+    description,
+    progress,
+    status,
+    dueDate,
+    tasks,
+    members,
+  } = project;
   return (
     <article className="rounded-2xl border border-border bg-card p-6 shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
 
@@ -39,14 +48,31 @@ function ProjectCard({
 
         </div>
 
-        <span
-          className={cn(
-            "rounded-full px-3 py-1 text-xs font-medium",
-            statusStyles[status]
-          )}
-        >
-          {status}
-        </span>
+        <div className="flex items-start gap-2">
+          <span
+            className={cn(
+              "rounded-full px-3 py-1 text-xs font-medium",
+              statusStyles[status]
+            )}
+          >
+            {status}
+          </span>
+
+          <ActionMenu
+            items={[
+              {
+                label: "Edit",
+                icon: <Pencil size={16} />,
+                onClick: () => onEdit?.(project),
+              },
+              {
+                label: "Delete",
+                icon: <Trash2 size={16} />,
+                onClick: () => onDelete?.(project),
+              },
+            ]}
+          />
+        </div>
 
       </div>
 
@@ -101,7 +127,7 @@ function ProjectCard({
           </p>
 
           <p className="text-xs text-muted">
-            Due {dueDate}
+            Due {formatDate(dueDate)}
           </p>
 
         </div>

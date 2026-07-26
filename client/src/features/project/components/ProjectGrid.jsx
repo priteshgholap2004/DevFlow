@@ -1,12 +1,18 @@
 import ProjectCard from "./ProjectCard";
 
-function ProjectGrid({ projects }) {
+function ProjectGrid({
+  projects,
+  onEdit,
+  onDelete,
+}) {
   return (
     <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
       {projects.map((project) => (
         <ProjectCard
           key={project.id}
-          {...project}
+          project={project}
+          onEdit={onEdit}
+          onDelete={onDelete}
         />
       ))}
     </div>
