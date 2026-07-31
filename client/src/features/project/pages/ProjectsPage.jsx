@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "../../../components/ui/Button";
 import ProjectGrid from "../components/ProjectGrid";
-import mockProjects from "../data/mockProjects";
+import { getProjects, createProject, updateProject, deleteProject } from "../../../api/projectApi";
 import ProjectToolbar from "../components/ProjectToolbar";
 import CreateProjectModal from "../components/CreateProjectModal";
 import Modal from "../../../components/ui/Modal";
@@ -16,7 +16,7 @@ function ProjectsPage() {
 
     const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
 
-    const [projects, setProjects] = useState(mockProjects);
+    const [projects, setProjects] = useState([]);
 
     const [selectedProject, setSelectedProject] = useState(null);
 
@@ -24,27 +24,39 @@ function ProjectsPage() {
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-    const handleCreateProject = (project) => {
-        setProjects((prev) => [
-            {
-                id: Date.now(),
-                progress: 0,
-                tasks: 0,
-                members: 0,
-                ...project,
-            },
-            ...prev,
-        ]);
+    const fetchProjects = async () => {
+        try {
+            const response = await getProjects();
+            setProjects(response.data.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    useEffect(() => {
+        fetchProjects();
+    }, []);
+
+    const handleCreateProject = async (projectData) => {
+        try {
+            await createProject(projectData);
+
+            await fetchProjects();
+        } catch (error) {
+            console.error(error);
+        }
     };
 
-    const handleUpdateProject = (updatedProject) => {
-        setProjects((prev) =>
-            prev.map((project) =>
-                project.id === updatedProject.id
-                    ? updatedProject
-                    : project
-            )
-        );
+    const handleUpdateProject = async (updatedProject) => {
+        try {
+            await updateProject(
+                updatedProject._id,
+                updatedProject
+            );
+
+            await fetchProjects();
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     const handleDeleteClick = (project) => {
@@ -52,15 +64,17 @@ function ProjectsPage() {
         setIsDeleteModalOpen(true);
     };
 
-    const handleDeleteProject = () => {
-        setProjects((prev) =>
-            prev.filter(
-                (project) => project.id !== projectToDelete.id
-            )
-        );
+    const handleDeleteProject = async () => {
+        try{
+            await deleteProject(projectToDelete._id);
 
-        setProjectToDelete(null);
-        setIsDeleteModalOpen(false);
+            await fetchProjects();
+
+            setProjectToDelete(null);
+            setIsDeleteModalOpen(false);
+        }catch(error){
+            console.error(error);
+        }
     };
 
     const handleEditClick = (project) => {
@@ -107,7 +121,11 @@ function ProjectsPage() {
                     </p>
                 </div>
 
-                <Button onClick={() => setIsProjectModalOpen(true)}>
+                <Button
+                    onClick={() => {
+                        setSelectedProject(null);
+                        setIsProjectModalOpen(true);
+                    }}>
                     New Project
                 </Button>
             </div>

@@ -26,7 +26,9 @@ function CreateProjectModal({
                 name: selectedProject.name,
                 description: selectedProject.description,
                 status: selectedProject.status,
-                dueDate: selectedProject.dueDate,
+                dueDate: selectedProject.dueDate
+                    ? selectedProject.dueDate.split("T")[0]
+                    : "",
             });
 
             setErrors({});
@@ -141,7 +143,7 @@ function CreateProjectModal({
                             name="name"
                             value={formData.name}
                             onChange={handleChange}
-                            placeholder="DevFlow"
+                            placeholder="Enter project name"
                             className="w-full rounded-xl border border-border bg-background px-4 py-3 text-text placeholder:text-muted outline-none focus:border-primary"
                         />
 
