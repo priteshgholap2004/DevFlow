@@ -34,7 +34,7 @@ function ProjectsOverview() {
       <div className="space-y-4">
         {projects.map((project) => (
           <ProjectItem
-            key={project._id}
+            key={project.id}
             {...project}
           />
         ))}
