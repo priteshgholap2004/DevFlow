@@ -6,6 +6,7 @@ import Dashboard from "../pages/Dashboard";
 import DashboardLayout from "../layouts/DashboardLayout";
 import NotFound from "../pages/NotFound";
 import ProjectsPage from "../features/project/pages/ProjectsPage";
+import ProtectedRoute from "./ProtectedRoute";
 
 function AppRoutes() {
     return (
@@ -18,12 +19,21 @@ function AppRoutes() {
 
                 <Route path="/register" element={<Register />} />
 
-                <Route path="/dashboard" element={<DashboardLayout />}>
-                    
-                    <Route index element={<Dashboard />} />
-           
-                    <Route path="projects" element={<ProjectsPage />} />
-                
+                <Route element={<ProtectedRoute />}>
+                    <Route
+                        path="/dashboard"
+                        element={<DashboardLayout />}
+                    >
+                        <Route
+                            index
+                            element={<Dashboard />}
+                        />
+
+                        <Route
+                            path="projects"
+                            element={<ProjectsPage />}
+                        />
+                    </Route>
                 </Route>
 
                 <Route path="*" element={<NotFound />} />
