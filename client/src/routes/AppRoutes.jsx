@@ -7,18 +7,23 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import NotFound from "../pages/NotFound";
 import ProjectsPage from "../features/project/pages/ProjectsPage";
 import ProtectedRoute from "./ProtectedRoute";
+import PublicRoute from "./PublicRoute";
 
 function AppRoutes() {
     return (
         <BrowserRouter>
             <Routes>
 
-                <Route path="/" element={<Login />} />
+                <Route element={<PublicRoute />}>
+                
+                    <Route path="/" element={<Login />} />
 
-                <Route path="/login" element={<Login />} />
+                    <Route path="/login" element={<Login />} />
 
-                <Route path="/register" element={<Register />} />
+                    <Route path="/register" element={<Register />} />
 
+
+                </Route>
                 <Route element={<ProtectedRoute />}>
                     <Route
                         path="/dashboard"
