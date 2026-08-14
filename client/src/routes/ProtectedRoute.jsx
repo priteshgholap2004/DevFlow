@@ -5,7 +5,13 @@ function ProtectedRoute() {
     const { isAuthenticated, loading } = useAuth();
 
     if (loading) {
-        return <div>Loading...</div>;
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-background">
+                <div className="text-muted">
+                    Loading...
+                </div>
+            </div>
+        )
     }
 
     return isAuthenticated ? (

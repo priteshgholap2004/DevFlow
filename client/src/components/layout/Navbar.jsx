@@ -1,9 +1,13 @@
-import { Menu, Bell, Plus } from "lucide-react";
-
+import { Menu, Bell, Plus, ChevronDown } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { useState } from "react";
 import SearchBar from "../ui/SearchBar";
 import Button from "../ui/Button";
 import Avatar from "../ui/Avatar";
 import { useLayout } from "../../context/LayoutContext";
+import { useAuth } from "../../context/AuthContext";
+import { LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
 
@@ -11,6 +15,40 @@ function Navbar() {
     toggleSidebar,
     openMobileSidebar,
   } = useLayout();
+
+  const { user, logout } = useAuth();
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    setProfileOpen(false);
+    navigate("/login", { replace: true });
+  }
+
+  const [profileOpen, setProfileOpen] = useState(false);
+
+  const profileRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target)
+      ) {
+        setProfileOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    };
+  }, []);
 
   const handleMenuClick = () => {
     if (window.innerWidth < 768) {
@@ -105,10 +143,49 @@ function Navbar() {
           </span>
         </Button>
 
-        <Avatar
-          name="Pritesh Gholap"
-          image="https://i.pravatar.cc/150?img=12"
-        />
+        <div 
+          ref={profileRef}
+          className="relative"
+        >
+          <button
+            onClick={() => setProfileOpen((prev) => !prev)}
+            className="flex items-center gap-2 rounded-xl p-1 transition-colors hover:bg-card"
+          >
+            <Avatar
+              name={user?.name || "Guest"}
+              image={user?.avatar}
+            />
+
+            <span className="hidden lg:block font-medium">
+              {user?.name}
+            </span>
+
+            <ChevronDown size={16} />
+
+          </button>
+
+          {profileOpen && (
+            <div className="absolute right-0 mt-2 w-56 rounded-xl border border-border bg-surface shadow-xl p-4" >
+              <p className="font-semibold">
+                {user?.name}
+              </p>
+              <p className="text-sm text-muted mt-1">
+                {user?.email}
+              </p>
+
+              <hr className="my-3 border-border" />
+              <button
+                onClick={handleLogout}
+                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-red-400 transition-colors hover:bg-card"
+              >
+                <LogOut size={16} />
+                Logout
+              </button>
+
+            </div>
+          )}
+
+        </div>
 
       </div>
     </header>
